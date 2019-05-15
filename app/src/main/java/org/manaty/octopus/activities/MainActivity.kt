@@ -1,18 +1,16 @@
-package org.manaty.octopus
+package org.manaty.octopus.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Button
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.activity_main.*
+import org.manaty.octopus.R
 import org.manaty.octopus.viewModels.MainViewModel
 import org.manaty.octopus.views.StatusButton
 
