@@ -10,11 +10,13 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
 import com.orhanobut.logger.Logger
+import com.pixplicity.easyprefs.library.Prefs
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_splash.*
 import net.manaty.octopusync.api.Headset
 import org.manaty.octopus.BuildConfig
+import org.manaty.octopus.PrefsKey
 import org.manaty.octopus.R
 import org.manaty.octopus.adapters.HeadsetListAdapter
 import org.manaty.octopus.viewModels.SplashViewModel
@@ -108,6 +110,7 @@ class SplashActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             .subscribe {
                 Logger.d(it)
                 if (it.session.id != "-1"){
+                    Prefs.putString(PrefsKey.SESSION_KEY, it.session.id)
                     moveToMain()
                 }
             }

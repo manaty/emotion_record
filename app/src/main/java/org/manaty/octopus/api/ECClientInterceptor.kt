@@ -1,5 +1,6 @@
 package org.manaty.octopus.api
 
+import com.orhanobut.logger.Logger
 import io.grpc.*
 
 class ECClientInterceptor : ClientInterceptor{
@@ -15,8 +16,13 @@ class ECClientInterceptor : ClientInterceptor{
                 super.start(object :
                     ForwardingClientCallListener.SimpleForwardingClientCallListener<RespT>(responseListener) {
                     override fun onHeaders(headers: Metadata) {
-                        println("header received from server: $headers")
+                        Logger.d("header received from server: $headers")
                         super.onHeaders(headers)
+                    }
+
+                    override fun onMessage(message: RespT) {
+                        Logger.d("onMessage received from server: $message")
+                        super.onMessage(message)
                     }
                 }, headers)
             }
