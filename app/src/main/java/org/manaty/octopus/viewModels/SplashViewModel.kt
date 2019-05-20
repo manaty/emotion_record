@@ -2,6 +2,7 @@ package org.manaty.octopus.viewModels
 
 import androidx.lifecycle.ViewModel
 import com.orhanobut.logger.Logger
+import com.pixplicity.easyprefs.library.Prefs
 import io.grpc.ManagedChannel
 import io.grpc.StatusRuntimeException
 import io.grpc.okhttp.OkHttpChannelBuilder
@@ -11,12 +12,13 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import net.manaty.octopusync.api.*
+import org.manaty.octopus.PrefsKey
 import org.manaty.octopus.api.ECClientInterceptor
 
 
 class SplashViewModel : ViewModel(){
-    private val host = "10.0.2.2"
-    private val port = 9991 //5432
+//    private val host = "10.0.2.2"
+//    private val port = 9991 //5432
 
     val compositeDisposable = CompositeDisposable()
     val isShowLoading : BehaviorSubject<Boolean> = BehaviorSubject.create()
@@ -28,7 +30,8 @@ class SplashViewModel : ViewModel(){
     private val stub : OctopuSyncGrpc.OctopuSyncBlockingStub
 
     init {
-        channel = OkHttpChannelBuilder.forAddress(host, port)
+        channel = OkHttpChannelBuilder.forAddress(Prefs.getString(PrefsKey.HOST_KEY, "-1")
+                , Prefs.getInt(PrefsKey.PORT_KEY, 0))
             .usePlaintext()
             .build()
 

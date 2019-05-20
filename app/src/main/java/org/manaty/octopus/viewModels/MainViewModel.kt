@@ -1,6 +1,5 @@
 package org.manaty.octopus.viewModels
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.orhanobut.logger.Logger
@@ -10,19 +9,16 @@ import io.grpc.StatusRuntimeException
 import io.grpc.okhttp.OkHttpChannelBuilder
 import io.grpc.stub.StreamObserver
 import io.reactivex.Maybe
-import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import net.manaty.octopusync.api.*
 import org.manaty.octopus.PrefsKey
 import org.manaty.octopus.api.ECClientInterceptor
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 
 class MainViewModel : ViewModel(){
-    private val host = "10.0.2.2"
-    private val port = 9991 //5432
+//    private val host = "10.0.2.2"
+//    private val port = 9991 //5432
 
     var counter : MutableLiveData<Int> = MutableLiveData() !!
     var serverStatus : MutableLiveData<Boolean> = MutableLiveData() !!
@@ -38,7 +34,8 @@ class MainViewModel : ViewModel(){
     var isInitializeConnection = true
 
     init {
-        channel = OkHttpChannelBuilder.forAddress(host, port)
+        channel = OkHttpChannelBuilder.forAddress(Prefs.getString(PrefsKey.HOST_KEY, "-1")
+                , Prefs.getInt(PrefsKey.PORT_KEY, 0))
             .usePlaintext()
             .build()
 
@@ -64,9 +61,11 @@ class MainViewModel : ViewModel(){
                     request.syncTimeResponse = synctimeresponse.build()
 
                     requestObserver.onNext(request.build())
+                    serverStatus.postValue(true)
                 }
 
                 override fun onError(t: Throwable?) {
+                    serverStatus.postValue(false)
                     Logger.e(t, "onError")
                 }
 

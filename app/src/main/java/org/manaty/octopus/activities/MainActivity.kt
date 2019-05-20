@@ -53,14 +53,11 @@ class MainActivity : BaseActivity(), View.OnTouchListener {
                 server -> view_status_server.setState(
             if(server){
                 view_status_server.setLogo(R.drawable.server_on)
-
                 StatusButton.State.ENABLED
             }
             else{
                 view_status_server.setLogo(R.drawable.server_off)
-
                 StatusButton.State.DISABLED// automatically returned
-
             })
         }
 
