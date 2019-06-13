@@ -1,8 +1,6 @@
 package org.manaty.octopus.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -14,7 +12,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import net.manaty.octopusync.api.State
+import org.m.BaseActivity
 import org.manaty.octopus.R
+import org.manaty.octopus.rxBus.RxBus
+import org.manaty.octopus.rxBus.RxBusEvents
 import org.manaty.octopus.viewModels.MainViewModel
 import org.manaty.octopus.views.StatusButton
 
@@ -40,12 +41,59 @@ class MainActivity : BaseActivity(), View.OnTouchListener {
         button_neutre.setOnTouchListener (this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.channel.shutdown()
+    }
+
     fun subscribeObservables(){
         viewModel.compositeDisposable.add(viewModel.showErrorToast
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 toast(message = it)
+            }
+        )
+
+        viewModel.compositeDisposable.add(
+            viewModel.subjectShowDialog
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    alertDialog(it)
+                }
+        )
+
+        viewModel.compositeDisposable.add(
+            RxBus.listen(RxBusEvents.EventInternetStatus::class.java)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { event ->
+                    when(event.isInternetAvailable){
+                        true -> {
+                            viewModel.isInternetAvailable = true
+                            viewModel.requestSync()
+                        }
+                        false -> {
+                            viewModel.isInternetAvailable = false
+                            viewModel.requestObserver.onCompleted()
+                        }
+                    }
+                }
+        )
+
+        viewModel.compositeDisposable.add(viewModel.sessionStatus
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                when(it){
+                    true -> {
+                        textview_session_initial_text.visibility = View.GONE
+                    }
+
+                    false -> {
+                        showCloseAppDialog()
+                    }
+                }
             }
         )
 
@@ -142,8 +190,10 @@ class MainActivity : BaseActivity(), View.OnTouchListener {
 
     fun updateState(state : State){
         viewModel.compositeDisposable.add(viewModel.requestUpdateState(state)
-            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .onErrorComplete {
+                return@onErrorComplete true
+            }
             .subscribe {response ->
                 Logger.d("updateState = $response")
             }

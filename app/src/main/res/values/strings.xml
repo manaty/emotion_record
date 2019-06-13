@@ -3,4 +3,6 @@
 
    <!--SplashActivity-->
    <string name="splash_connection_prompt">En attente de connexion au serveur...</string>
+
+   <string name="dummy_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Varius duis at consectetur lorem. Tempus urna et pharetra pharetra. Urna neque viverra justo nec ultrices dui sapien. Fermentum odio eu feugiat pretium nibh ipsum consequat nisl vel. Vulputate dignissim suspendisse in est ante. Magna ac placerat vestibulum lectus mauris ultrices eros. Id velit ut tortor pretium viverra suspendisse. Vulputate enim nulla aliquet porttitor lacus luctus accumsan tortor posuere. Lacus laoreet non curabitur gravida arcu ac tortor dignissim convallis. Tellus in metus vulputate eu scelerisque felis imperdiet. Quis ipsum suspendisse ultrices gravida dictum fusce ut. Massa massa ultricies mi quis. Et malesuada fames ac turpis. Imperdiet sed euismod nisi porta lorem.</string>
 </resources>

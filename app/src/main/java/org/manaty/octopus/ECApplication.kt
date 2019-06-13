@@ -5,8 +5,10 @@ import android.content.ContextWrapper
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.pixplicity.easyprefs.library.Prefs
+import org.manaty.octopus.rxBus.RxBus
 
 class ECApplication  : Application() {
+    private lateinit var rxBus : RxBus
 
     override fun onCreate() {
         super.onCreate()
@@ -19,5 +21,7 @@ class ECApplication  : Application() {
             .setPrefsName(packageName)
             .setUseDefaultSharedPreference(true)
             .build()
+
+
     }
 }

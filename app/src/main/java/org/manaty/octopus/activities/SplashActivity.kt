@@ -11,17 +11,21 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
 import com.orhanobut.logger.Logger
 import com.pixplicity.easyprefs.library.Prefs
+import io.grpc.StatusRuntimeException
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_splash.*
 import net.manaty.octopusync.api.Headset
+import org.m.BaseActivity
 import org.manaty.octopus.BuildConfig
 import org.manaty.octopus.PrefsKey
 import org.manaty.octopus.R
 import org.manaty.octopus.adapters.HeadsetListAdapter
+import org.manaty.octopus.rxBus.RxBus
+import org.manaty.octopus.rxBus.RxBusEvents
 import org.manaty.octopus.viewModels.SplashViewModel
 
-class SplashActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class SplashActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
 
     lateinit var viewModel : SplashViewModel
     lateinit var headsetListAdapter : HeadsetListAdapter
@@ -49,8 +53,13 @@ class SplashActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         Logger.d("selected ${viewModel.listHeadsets[position].id}")
-        if (position != 0){
-            createSession(viewModel.listHeadsets[position].code)
+        if (viewModel.isInternetAvailable) {
+            if (position != 0) {
+                createSession(viewModel.listHeadsets[position].code)
+            }
+        }
+        else{
+            toast("Internet connection unavailable")
         }
     }
 
@@ -86,8 +95,25 @@ class SplashActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             }
         )
 
+        viewModel.compositeDisposable.add(
+            RxBus.listen(RxBusEvents.EventInternetStatus::class.java)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { event ->
+                    when(event.isInternetAvailable){
+                        true -> viewModel.isInternetAvailable = true
+                        false -> viewModel.isInternetAvailable = false
+                    }
+                }
+        )
+
         viewModel.compositeDisposable.addAll(viewModel.requestHeadsetList()
             .observeOn(AndroidSchedulers.mainThread())
+            .onErrorComplete{
+                viewModel.showRequestError.onNext(it.cause.toString())
+                Logger.e(it, "requestHeadsetList error")
+                return@onErrorComplete true
+            }
             .subscribe { getHeadsetsResponse ->
 
                 val defaultItem = Headset.newBuilder()
@@ -107,6 +133,10 @@ class SplashActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
         viewModel.compositeDisposable.add(viewModel.requestCreateSession(headsetCode, deviceId)
             .observeOn(AndroidSchedulers.mainThread())
+            .onErrorComplete {
+                viewModel.showRequestError.onNext(it.cause.toString())
+                return@onErrorComplete true
+            }
             .subscribe {
                 Logger.d(it)
                 if (it.session.id != "-1"){

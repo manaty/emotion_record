@@ -25,6 +25,7 @@ class SplashViewModel : ViewModel(){
     val showRequestError : BehaviorSubject<String> = BehaviorSubject.create()
     var requestCount = 0
     var listHeadsets : MutableList<Headset> = ArrayList()
+    var isInternetAvailable  = true
 
     val channel : ManagedChannel
     private val stub : OctopuSyncGrpc.OctopuSyncBlockingStub
@@ -49,19 +50,15 @@ class SplashViewModel : ViewModel(){
             request.headsetCode = headsetCode
 
             createSessionResponse = stub.createSession(request.build())
+
+            isShowLoading.onNext(false)
         }
         catch (e : StatusRuntimeException){
+            isShowLoading.onNext(false)
             Logger.e(e, "requestCreateSession error")
-            e.status.description?.let {
-                showRequestError.onNext(it)
-            }
-
-            val session = Session.newBuilder()
-            session.id = "-1"
-            createSessionResponse = CreateSessionResponse.newBuilder().setSession(session).build()
+            return Maybe.error(e)
         }
 
-        isShowLoading.onNext(false)
         return Maybe.just(createSessionResponse)
             .subscribeOn(Schedulers.io())
 
@@ -76,11 +73,9 @@ class SplashViewModel : ViewModel(){
             getHeadsetsResponse = stub.getHeadsets(request)
         }
         catch (e : StatusRuntimeException){
+            isShowLoading.onNext(false)
             Logger.e(e, "requestCreateSession error")
-            e.status.description?.let {
-                showRequestError.onNext(it)
-            }
-            getHeadsetsResponse = GetHeadsetsResponse.newBuilder().build()
+            return Maybe.error(e)
         }
 
         return Maybe.just(getHeadsetsResponse)

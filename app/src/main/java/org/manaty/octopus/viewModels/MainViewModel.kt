@@ -1,7 +1,10 @@
 package org.manaty.octopus.viewModels
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.orhanobut.logger.Logger
 import com.pixplicity.easyprefs.library.Prefs
 import io.grpc.ManagedChannel
@@ -12,23 +15,27 @@ import io.reactivex.Maybe
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import net.manaty.octopusync.api.*
+import org.manaty.octopus.ECApplication
 import org.manaty.octopus.PrefsKey
 import org.manaty.octopus.api.ECClientInterceptor
 
 class MainViewModel : ViewModel(){
-//    private val host = "10.0.2.2"
-//    private val port = 9991 //5432
 
-    var counter : MutableLiveData<Int> = MutableLiveData() !!
-    var serverStatus : MutableLiveData<Boolean> = MutableLiveData() !!
-    var headsetStatus : MutableLiveData<Boolean> = MutableLiveData() !!
+    var counter : MutableLiveData<Int> = MutableLiveData()
+    var serverStatus : MutableLiveData<Boolean> = MutableLiveData()
+    var headsetStatus : MutableLiveData<Boolean> = MutableLiveData()
+    var isInternetAvailable = true
 
     val compositeDisposable = CompositeDisposable()
-    val showErrorToast : BehaviorSubject<String> = BehaviorSubject.create()
+    val showErrorToast : PublishSubject<String> = PublishSubject.create()
+    val subjectShowDialog : PublishSubject<String> = PublishSubject.create()
+    val sessionStatus : PublishSubject<Boolean> = PublishSubject.create()
+
     val channel : ManagedChannel
-    val stub : OctopuSyncGrpc.OctopuSyncBlockingStub
-    val asyncStub : OctopuSyncGrpc.OctopuSyncStub
+    private val stub : OctopuSyncGrpc.OctopuSyncBlockingStub
+    private val asyncStub : OctopuSyncGrpc.OctopuSyncStub
 
     lateinit var requestObserver : StreamObserver<ClientSyncMessage>
     var isInitializeConnection = true
@@ -54,13 +61,34 @@ class MainViewModel : ViewModel(){
         requestObserver = asyncStub.sync(
             object : StreamObserver<ServerSyncMessage>{
                 override fun onNext(value: ServerSyncMessage?) {
-                    val request = ClientSyncMessage.newBuilder()
-                    val synctimeresponse = SyncTimeResponse.newBuilder()
-                    synctimeresponse.seqnum = value?.syncTimeRequest?.seqnum ?: 1L
-                    synctimeresponse.receivedTimeUtc = System.currentTimeMillis()
-                    request.syncTimeResponse = synctimeresponse.build()
 
-                    requestObserver.onNext(request.build())
+                    value?.syncTimeRequest?.let {
+                        Logger.d("syncTimeRequest ${it.seqnum}" )
+
+                        val request = ClientSyncMessage.newBuilder()
+                        val synctimeresponse = SyncTimeResponse.newBuilder()
+                        synctimeresponse.seqnum = value?.syncTimeRequest?.seqnum ?: 1L
+                        synctimeresponse.receivedTimeUtc = System.currentTimeMillis()
+                        request.syncTimeResponse = synctimeresponse.build()
+
+                        requestObserver.onNext(request.build())
+                    }
+
+                    value?.notification?.let {
+                        var message = " "
+                        it.experienceStartedEvent?.let {
+                            message = "Start"
+                        }
+
+                        it.experienceStoppedEvent?.let {
+                            message = "End"
+//                            requestObserver.onCompleted()
+                        }
+
+                        Logger.d("notification $message")
+                        showErrorToast.onNext(message)
+
+                    }
                     serverStatus.postValue(true)
                 }
 
@@ -88,9 +116,7 @@ class MainViewModel : ViewModel(){
         }
         catch (e : StatusRuntimeException){
             Logger.e(e,"${requestSync().toString()} catch")
-            e.status.description?.let {
-                showErrorToast.onNext(it)
-            }
+            showErrorToast.onNext(e.cause.toString())
         }
 
 
@@ -112,12 +138,7 @@ class MainViewModel : ViewModel(){
         }
         catch (e : StatusRuntimeException){
             Logger.e(e, "requestUpdateState error")
-            e.status.description?.let {
-                it
-            }
-
-            response = UpdateStateResponse.newBuilder()
-                .build()
+            return Maybe.error(e)
         }
 
         return Maybe.just(response)
