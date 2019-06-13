@@ -62,39 +62,48 @@ class MainViewModel : ViewModel(){
             object : StreamObserver<ServerSyncMessage>{
                 override fun onNext(value: ServerSyncMessage?) {
 
-                    value?.syncTimeRequest?.let {
-                        Logger.d("syncTimeRequest ${it.seqnum}" )
+                    when(value?.messageCase){
+                        ServerSyncMessage.MessageCase.SYNC_TIME_REQUEST -> {
+                            Logger.d("message case = sync time request")
 
-                        val request = ClientSyncMessage.newBuilder()
-                        val synctimeresponse = SyncTimeResponse.newBuilder()
-                        synctimeresponse.seqnum = value?.syncTimeRequest?.seqnum ?: 1L
-                        synctimeresponse.receivedTimeUtc = System.currentTimeMillis()
-                        request.syncTimeResponse = synctimeresponse.build()
+                            val request = ClientSyncMessage.newBuilder()
+                            val synctimeresponse = SyncTimeResponse.newBuilder()
+                            synctimeresponse.seqnum = value?.syncTimeRequest?.seqnum ?: 1L
+                            synctimeresponse.receivedTimeUtc = System.currentTimeMillis()
+                            request.syncTimeResponse = synctimeresponse.build()
 
-                        requestObserver.onNext(request.build())
-                    }
-
-                    value?.notification?.let {
-                        var message = " "
-                        it.experienceStartedEvent?.let {
-                            message = "Start"
+                            requestObserver.onNext(request.build())
                         }
 
-                        it.experienceStoppedEvent?.let {
-                            message = "End"
-//                            requestObserver.onCompleted()
+                        ServerSyncMessage.MessageCase.NOTIFICATION -> {
+                            Logger.d("message case = notification")
+                            var message = " "
+                            when(value?.notification.notificationCase){
+                                Notification.NotificationCase.EXPERIENCE_STARTED_EVENT -> {
+                                    message = "Start"
+                                    sessionStatus.onNext(true)
+                                }
+
+                                Notification.NotificationCase.EXPERIENCE_STOPPED_EVENT -> {
+                                    message = "End"
+                                    sessionStatus.onNext(false)
+//                                    requestObserver.onCompleted()
+                                }
+                            }
+
+                            Logger.d("notification $message")
+                            showErrorToast.onNext(message)
                         }
 
-                        Logger.d("notification $message")
-                        showErrorToast.onNext(message)
-
                     }
+
                     serverStatus.postValue(true)
                 }
 
                 override fun onError(t: Throwable?) {
                     serverStatus.postValue(false)
                     Logger.e(t, "onError")
+                    onCompleted()
                 }
 
                 override fun onCompleted() {
