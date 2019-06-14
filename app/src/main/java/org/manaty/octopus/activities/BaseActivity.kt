@@ -97,12 +97,11 @@ open class BaseActivity : AppCompatActivity(){
 
     fun showCloseAppDialog(){
         val alertDialog = AlertDialog.Builder(this)
-            .setMessage(getString(R.string.dummy_text))
-            .setNegativeButton("Fermer I'application",
-                { dialog, which ->
+            .setMessage(getString(R.string.main_post_session_text))
+            .setNegativeButton("Fermer I'application") { dialog, which ->
                     dialog.dismiss()
                     finish()
-                })
+                }
             .create()
             .show()
     }

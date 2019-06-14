@@ -87,12 +87,12 @@ class MainViewModel : ViewModel(){
                                 Notification.NotificationCase.EXPERIENCE_STOPPED_EVENT -> {
                                     message = "End"
                                     sessionStatus.onNext(false)
-//                                    requestObserver.onCompleted()
+                                    requestObserver.onCompleted()
                                 }
                             }
 
                             Logger.d("notification $message")
-                            showErrorToast.onNext(message)
+//                            showErrorToast.onNext(message)
                         }
 
                     }

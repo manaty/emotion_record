@@ -4,5 +4,9 @@
    <!--SplashActivity-->
    <string name="splash_connection_prompt">En attente de connexion au serveur...</string>
 
+   <!--MainActivity-->
+   <string name="main_pre_session_text">L\'expérience va bientôt commencer. Quand ce sera le cas, vous pourrez indiquer en temps réel votre statut émotionnel durant l\'écoute de la musique. Pour cela, il vous suffira d\'appuyer sur les 4 boutons qui s\'afficheront sous cette popup. \n\nMerci beaucoup pour votre participation, nous vous souhaitons une agréable expérience musicale.</string>
+   <string name="main_post_session_text">L\'expérience est maintenant terminée, les organisateurs vont venir récupérer votre casque.\n\n Merci beaucoup pour votre participation !</string>
    <string name="dummy_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Varius duis at consectetur lorem. Tempus urna et pharetra pharetra. Urna neque viverra justo nec ultrices dui sapien. Fermentum odio eu feugiat pretium nibh ipsum consequat nisl vel. Vulputate dignissim suspendisse in est ante. Magna ac placerat vestibulum lectus mauris ultrices eros. Id velit ut tortor pretium viverra suspendisse. Vulputate enim nulla aliquet porttitor lacus luctus accumsan tortor posuere. Lacus laoreet non curabitur gravida arcu ac tortor dignissim convallis. Tellus in metus vulputate eu scelerisque felis imperdiet. Quis ipsum suspendisse ultrices gravida dictum fusce ut. Massa massa ultricies mi quis. Et malesuada fames ac turpis. Imperdiet sed euismod nisi porta lorem.</string>
+
 </resources>

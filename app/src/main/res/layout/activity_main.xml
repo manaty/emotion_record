@@ -101,7 +101,7 @@
            android:id="@+id/textview_session_initial_text"
            android:layout_width="match_parent"
            android:layout_height="match_parent"
-           android:text="@string/dummy_text"
+           android:text="@string/main_pre_session_text"
            android:textSize="18sp"
            android:textStyle="bold"
            android:textColor="@color/colorWhite"
