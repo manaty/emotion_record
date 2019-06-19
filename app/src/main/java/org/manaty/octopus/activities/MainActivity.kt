@@ -43,7 +43,13 @@ class MainActivity : BaseActivity(), View.OnTouchListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.channel.shutdown()
+        viewModel.requestObserver.onCompleted()
+        viewModel.channel.shutdownNow()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 
     fun subscribeObservables(){

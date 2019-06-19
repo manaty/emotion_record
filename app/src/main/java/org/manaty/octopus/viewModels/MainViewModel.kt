@@ -80,18 +80,20 @@ class MainViewModel : ViewModel(){
                             var message = " "
                             when(value?.notification.notificationCase){
                                 Notification.NotificationCase.EXPERIENCE_STARTED_EVENT -> {
-                                    message = "Start"
-                                    sessionStatus.onNext(true)
+                                    //TODO comment for future use
+//                                    message = "Start"
+//                                    sessionStatus.onNext(true)
                                 }
 
                                 Notification.NotificationCase.EXPERIENCE_STOPPED_EVENT -> {
-                                    message = "End"
-                                    sessionStatus.onNext(false)
-                                    requestObserver.onCompleted()
+                                    //TODO comment for future use
+//                                    message = "End"
+//                                    sessionStatus.onNext(false)
+//                                    requestObserver.onCompleted()
                                 }
                             }
 
-                            Logger.d("notification $message")
+//                            Logger.d("notification $message")
 //                            showErrorToast.onNext(message)
                         }
 
@@ -102,12 +104,12 @@ class MainViewModel : ViewModel(){
 
                 override fun onError(t: Throwable?) {
                     serverStatus.postValue(false)
-                    Logger.e(t, "onError")
+                    Logger.e(t, "requestSync onError")
                     onCompleted()
                 }
 
                 override fun onCompleted() {
-                    Logger.d("onComplete")
+                    Logger.d("requestSync onComplete")
                 }
             })
 
