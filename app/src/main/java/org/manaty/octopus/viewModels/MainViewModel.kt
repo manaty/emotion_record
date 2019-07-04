@@ -1,10 +1,8 @@
 package org.manaty.octopus.viewModels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import android.os.CountDownTimer
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.orhanobut.logger.Logger
 import com.pixplicity.easyprefs.library.Prefs
 import io.grpc.ManagedChannel
@@ -14,10 +12,8 @@ import io.grpc.stub.StreamObserver
 import io.reactivex.Maybe
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import net.manaty.octopusync.api.*
-import org.manaty.octopus.ECApplication
 import org.manaty.octopus.PrefsKey
 import org.manaty.octopus.api.ECClientInterceptor
 
@@ -40,6 +36,18 @@ class MainViewModel : ViewModel(){
     lateinit var requestObserver : StreamObserver<ClientSyncMessage>
     var isInitializeConnection = true
 
+    private val countDownTimer  = object : CountDownTimer(10000, 1000){
+        override fun onTick(millisUntilFinished: Long) {
+            Logger.d("timer = $millisUntilFinished")
+        }
+
+        override fun onFinish() {
+            headsetStatus.postValue(false)
+            isCountDownRunning = false
+        }
+    }
+    private var isCountDownRunning = false
+
     init {
         channel = OkHttpChannelBuilder.forAddress(Prefs.getString(PrefsKey.HOST_KEY, "-1")
                 , Prefs.getInt(PrefsKey.PORT_KEY, 0))
@@ -55,6 +63,20 @@ class MainViewModel : ViewModel(){
         counter.value = 0
         serverStatus.value = false
         headsetStatus.value = false
+    }
+
+    /** Note countdown for checking of headset signal
+     * more than 10 secs is safe to assume that there is something wrong
+     * with the headset
+     */
+
+    fun resetCountdown(){
+        if (isCountDownRunning){
+            countDownTimer.cancel()
+        }
+
+        countDownTimer.start()
+        isCountDownRunning = true
     }
 
     fun requestSync(){
@@ -77,7 +99,7 @@ class MainViewModel : ViewModel(){
 
                         ServerSyncMessage.MessageCase.NOTIFICATION -> {
                             Logger.d("message case = notification")
-                            var message = " "
+
                             when(value?.notification.notificationCase){
                                 Notification.NotificationCase.EXPERIENCE_STARTED_EVENT -> {
                                     //TODO comment for future use
@@ -86,6 +108,16 @@ class MainViewModel : ViewModel(){
                                 }
 
                                 Notification.NotificationCase.EXPERIENCE_STOPPED_EVENT -> {
+                                    //TODO comment for future use
+//                                    message = "End"
+//                                    sessionStatus.onNext(false)
+//                                    requestObserver.onCompleted()
+                                }
+
+                                Notification.NotificationCase.DEV_EVENT -> {
+                                    resetCountdown()
+                                    Logger.d("dev event ${value.notification.devEvent}")
+                                    value.notification.devEvent.signal
                                     //TODO comment for future use
 //                                    message = "End"
 //                                    sessionStatus.onNext(false)
@@ -104,6 +136,9 @@ class MainViewModel : ViewModel(){
 
                 override fun onError(t: Throwable?) {
                     serverStatus.postValue(false)
+                    t?.let {
+                        showErrorToast.onNext(it.cause.toString())
+                    }
                     Logger.e(t, "requestSync onError")
                     onCompleted()
                 }
@@ -123,6 +158,13 @@ class MainViewModel : ViewModel(){
 
                 requestObserver.onNext(request.build())
                 isInitializeConnection = false
+
+                /** note start countdown  for headset signal**/
+                countDownTimer.start()
+                isCountDownRunning = true
+
+                /** note initially set headset signal to good**/
+                headsetStatus.postValue(true)
             }
         }
         catch (e : StatusRuntimeException){
