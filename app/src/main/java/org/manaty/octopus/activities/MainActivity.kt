@@ -17,10 +17,12 @@ import org.manaty.octopus.R
 import org.manaty.octopus.rxBus.RxBus
 import org.manaty.octopus.rxBus.RxBusEvents
 import org.manaty.octopus.viewModels.MainViewModel
+import org.manaty.octopus.views.ImpedanceDialog
 import org.manaty.octopus.views.StatusButton
 
-class MainActivity : BaseActivity(), View.OnTouchListener {
+class MainActivity : BaseActivity(), View.OnTouchListener, View.OnClickListener {
     lateinit var viewModel: MainViewModel
+    var state : State = State.NONE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +41,8 @@ class MainActivity : BaseActivity(), View.OnTouchListener {
         button_plaisir.setOnTouchListener (this)
         button_faible.setOnTouchListener (this)
         button_neutre.setOnTouchListener (this)
+
+        button_impedance_info.setOnClickListener(this)
     }
 
     override fun onDestroy() {
@@ -131,45 +135,66 @@ class MainActivity : BaseActivity(), View.OnTouchListener {
 
         viewModel.serverStatus.observe(this, serverObserver)
         viewModel.headsetStatus.observe(this, headsetObserver)
+        viewModel.impedanceValue.observe(this, Observer {
+            textview_impedance_value.setText("$it%")
+        })
+    }
 
-        /**
-         * setting of serverstatus
-         * viewModel.serverStatus.postValue(true)
-         */
+    override fun onClick(v: View?) {
+        when(v){
+            button_impedance_info -> {
+                ImpedanceDialog().show(supportFragmentManager, "impedanceDialog")
+            }
+        }
     }
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         if (event!!.action == MotionEvent.ACTION_DOWN){
-            var state = State.NEUTRE
-
+            setButtonsDefault()
             when(v){
 
                 button_frisson -> {
-                    state = State.FRISSON_MUSICAL
-                    setButtonsDefault()
-                    button_frisson.setBackgroundResource(R.drawable.bg_main_button_selected)
-                    button_frisson.setTextColor(ContextCompat.getColor(this, R.color.colorFrisson))
+                    if (isStateDuplicate(State.FRISSON_MUSICAL)){
+                        state = State.NONE
+                    }
+                    else {
+                        state = State.FRISSON_MUSICAL
+                        button_frisson.setBackgroundResource(R.drawable.bg_main_button_selected)
+                        button_frisson.setTextColor(ContextCompat.getColor(this, R.color.colorFrisson))
+                    }
                 }
 
                 button_plaisir -> {
-                    state = State.PLAISIR_INTENSE
-                    setButtonsDefault()
-                    button_plaisir.setBackgroundResource(R.drawable.bg_main_button_selected)
-                    button_plaisir.setTextColor(ContextCompat.getColor(this, R.color.colorFrisson))
+                    if (isStateDuplicate(State.PLAISIR_INTENSE)){
+                        state = State.NONE
+                    }
+                    else {
+                        state = State.PLAISIR_INTENSE
+                        button_plaisir.setBackgroundResource(R.drawable.bg_main_button_selected)
+                        button_plaisir.setTextColor(ContextCompat.getColor(this, R.color.colorFrisson))
+                    }
                 }
 
                 button_faible -> {
-                    state = State.FAIBLE_PLAISIR
-                    setButtonsDefault()
-                    button_faible.setBackgroundResource(R.drawable.bg_main_button_selected)
-                    button_faible.setTextColor(ContextCompat.getColor(this, R.color.colorFrisson))
+                    if (isStateDuplicate(State.FAIBLE_PLAISIR)){
+                        state = State.NONE
+                    }
+                    else {
+                        state = State.FAIBLE_PLAISIR
+                        button_faible.setBackgroundResource(R.drawable.bg_main_button_selected)
+                        button_faible.setTextColor(ContextCompat.getColor(this, R.color.colorFrisson))
+                    }
                 }
 
                 button_neutre -> {
-                    state = State.NEUTRE
-                    setButtonsDefault()
-                    button_neutre.setBackgroundResource(R.drawable.bg_main_button_selected)
-                    button_neutre.setTextColor(ContextCompat.getColor(this, R.color.colorFrisson))
+                    if (isStateDuplicate(State.NEUTRE)){
+                        state = State.NONE
+                    }
+                    else {
+                        state = State.NEUTRE
+                        button_neutre.setBackgroundResource(R.drawable.bg_main_button_selected)
+                        button_neutre.setTextColor(ContextCompat.getColor(this, R.color.colorFrisson))
+                    }
                 }
 
             }
@@ -179,6 +204,13 @@ class MainActivity : BaseActivity(), View.OnTouchListener {
         return false
     }
 
+    /** check if the current state is the same with the supposedly next state **/
+    private fun isStateDuplicate(state : State) : Boolean{
+        if (this.state == state) {
+            return true
+        }
+        return false
+    }
 
     private fun setButtonsDefault(){
         button_frisson.setBackgroundColor(ContextCompat.getColor(this, R.color.colorFrisson))

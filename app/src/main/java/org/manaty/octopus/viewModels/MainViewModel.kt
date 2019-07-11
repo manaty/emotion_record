@@ -16,12 +16,16 @@ import io.reactivex.subjects.PublishSubject
 import net.manaty.octopusync.api.*
 import org.manaty.octopus.PrefsKey
 import org.manaty.octopus.api.ECClientInterceptor
+import org.manaty.octopus.rxBus.RxBus
+import org.manaty.octopus.rxBus.RxBusEvents
+import kotlin.math.roundToInt
 
 class MainViewModel : ViewModel(){
 
     var counter : MutableLiveData<Int> = MutableLiveData()
     var serverStatus : MutableLiveData<Boolean> = MutableLiveData()
     var headsetStatus : MutableLiveData<Boolean> = MutableLiveData()
+    var impedanceValue : MutableLiveData<Int> = MutableLiveData()
     var isInternetAvailable = true
 
     val compositeDisposable = CompositeDisposable()
@@ -79,12 +83,50 @@ class MainViewModel : ViewModel(){
         isCountDownRunning = true
     }
 
+    fun computeGlobalImpedance(devEvent: DevEvent) : Int {
+        var impedance = 0.00
+
+        /** add all then divide by 56 then multiply by 100 **/
+        impedance = ((devEvent.af3 + devEvent.f7 + devEvent.f3 + devEvent.fc5
+        + devEvent.t7 + devEvent.p7 + devEvent.o1 + devEvent.o2
+        + devEvent.p8 + devEvent.t8 + devEvent.fc6 + devEvent.f4
+        + devEvent.f8 + devEvent.af4) / 56) * 100
+
+        return impedance.roundToInt()
+    }
+
+    fun mockImpedance(){
+        val devEvent = Notification.newBuilder().devEventBuilder
+        devEvent.signal = Math.random().toInt()
+        devEvent.af3 = Math.random()
+        devEvent.f7 = Math.random()
+        devEvent.f3 = Math.random()
+        devEvent.fc5 = Math.random()
+        devEvent.t7 = Math.random()
+        devEvent.p7 = Math.random()
+        devEvent.o1 = Math.random()
+        devEvent.o2 = Math.random()
+        devEvent.p8 = Math.random()
+        devEvent.t8 = Math.random()
+        devEvent.fc6 = Math.random()
+        devEvent.f4 = Math.random()
+        devEvent.f8 = Math.random()
+        devEvent.af4 = Math.random()
+        devEvent.battery = Math.random().toInt()
+
+
+        impedanceValue.postValue(computeGlobalImpedance(devEvent.build()))
+        RxBus.publish(RxBusEvents.EventDevEvent(devEvent.build()))
+    }
+
     fun requestSync(){
         requestObserver = asyncStub.sync(
             object : StreamObserver<ServerSyncMessage>{
                 override fun onNext(value: ServerSyncMessage?) {
+                    serverStatus.postValue(true)
+//                    mockImpedance()
 
-                    when(value?.messageCase){
+                    when(value?.messageCase) {
                         ServerSyncMessage.MessageCase.SYNC_TIME_REQUEST -> {
                             Logger.d("message case = sync time request")
 
@@ -100,7 +142,7 @@ class MainViewModel : ViewModel(){
                         ServerSyncMessage.MessageCase.NOTIFICATION -> {
                             Logger.d("message case = notification")
 
-                            when(value?.notification.notificationCase){
+                            when (value.notification.notificationCase) {
                                 Notification.NotificationCase.EXPERIENCE_STARTED_EVENT -> {
                                     //TODO comment for future use
 //                                    message = "Start"
@@ -116,12 +158,17 @@ class MainViewModel : ViewModel(){
 
                                 Notification.NotificationCase.DEV_EVENT -> {
                                     resetCountdown()
-                                    Logger.d("dev event ${value.notification.devEvent}")
-                                    value.notification.devEvent.signal
+                                    headsetStatus.postValue(true)
+                                    impedanceValue.postValue(computeGlobalImpedance(value.notification.devEvent))
+                                    RxBus.publish(RxBusEvents.EventDevEvent(value.notification.devEvent))
                                     //TODO comment for future use
 //                                    message = "End"
 //                                    sessionStatus.onNext(false)
 //                                    requestObserver.onCompleted()
+                                }
+
+                                Notification.NotificationCase.NOTIFICATION_NOT_SET -> {
+
                                 }
                             }
 
@@ -129,13 +176,16 @@ class MainViewModel : ViewModel(){
 //                            showErrorToast.onNext(message)
                         }
 
-                    }
+                        ServerSyncMessage.MessageCase.MESSAGE_NOT_SET -> {
+                            Logger.e("Message not set")
+                        }
 
-                    serverStatus.postValue(true)
+                    }
                 }
 
                 override fun onError(t: Throwable?) {
                     serverStatus.postValue(false)
+                    headsetStatus.postValue(false)
                     t?.let {
                         showErrorToast.onNext(it.cause.toString())
                     }

@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:padding="16dp"
+>
+
+   <androidx.constraintlayout.widget.ConstraintLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+   >
+
+      <TextView
+              android:id="@+id/textview_header"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="Impédance des électrodes"
+              android:textStyle="bold"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              android:gravity="center"
+              android:layout_marginBottom="16dp"
+              app:layout_constraintTop_toTopOf="parent"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintBottom_toTopOf="@id/textview_af3_text"
+              app:layout_constraintLeft_toLeftOf="parent"
+      />
+
+      <!-- af3 -->
+      <TextView
+              android:id="@+id/textview_af3_text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="AF3"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              android:layout_marginRight="16dp"
+              app:layout_constraintTop_toBottomOf="@id/textview_header"
+              app:layout_constraintRight_toLeftOf="@id/textview_af3_value"
+              app:layout_constraintBottom_toTopOf="@id/textview_f7_text"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintHorizontal_chainStyle="packed"
+      />
+
+      <TextView
+              android:id="@+id/textview_af3_value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="0"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              app:layout_constraintTop_toTopOf="@id/textview_af3_text"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintBottom_toBottomOf="@id/textview_af3_text"
+              app:layout_constraintLeft_toRightOf="@id/textview_af3_text"
+      />
+
+      <!-- f7 -->
+      <TextView
+              android:id="@+id/textview_f7_text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="F7"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              android:layout_marginRight="16dp"
+              app:layout_constraintTop_toBottomOf="@id/textview_af3_text"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintRight_toLeftOf="@id/textview_f7_value"
+              app:layout_constraintHorizontal_chainStyle="packed"
+
+      />
+
+      <TextView
+              android:id="@+id/textview_f7_value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="0"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              app:layout_constraintTop_toTopOf="@id/textview_f7_text"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintBottom_toBottomOf="@id/textview_f7_text"
+              app:layout_constraintLeft_toRightOf="@id/textview_f7_text"
+              app:layout_constraintVertical_bias="0.0"/>
+
+      <!-- f3 -->
+      <TextView
+              android:id="@+id/textview_f3_text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="F3"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              android:layout_marginRight="16dp"
+              app:layout_constraintTop_toBottomOf="@id/textview_f7_text"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintRight_toLeftOf="@id/textview_f3_value"
+              app:layout_constraintHorizontal_chainStyle="packed"
+
+      />
+
+      <TextView
+              android:id="@+id/textview_f3_value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="0"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              app:layout_constraintTop_toTopOf="@id/textview_f3_text"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintBottom_toBottomOf="@id/textview_f3_text"
+              app:layout_constraintLeft_toRightOf="@id/textview_f3_text"
+              app:layout_constraintVertical_bias="0.0"/>
+
+      <!-- fc5 -->
+      <TextView
+              android:id="@+id/textview_fc5_text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="FC5"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              android:layout_marginRight="16dp"
+              app:layout_constraintTop_toBottomOf="@id/textview_f3_text"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintRight_toLeftOf="@id/textview_fc5_value"
+              app:layout_constraintHorizontal_chainStyle="packed"
+
+      />
+
+      <TextView
+              android:id="@+id/textview_fc5_value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="0"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              app:layout_constraintTop_toTopOf="@id/textview_fc5_text"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintBottom_toBottomOf="@id/textview_fc5_text"
+              app:layout_constraintLeft_toRightOf="@id/textview_fc5_text"
+              app:layout_constraintVertical_bias="0.0"/>
+
+      <!-- t7 -->
+      <TextView
+              android:id="@+id/textview_t7_text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="T7"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              android:layout_marginRight="16dp"
+              app:layout_constraintTop_toBottomOf="@id/textview_fc5_text"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintRight_toLeftOf="@id/textview_t7_value"
+              app:layout_constraintHorizontal_chainStyle="packed"
+
+      />
+
+      <TextView
+              android:id="@+id/textview_t7_value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="0"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              app:layout_constraintTop_toTopOf="@id/textview_t7_text"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintBottom_toBottomOf="@id/textview_t7_text"
+              app:layout_constraintLeft_toRightOf="@id/textview_t7_text"
+              app:layout_constraintVertical_bias="0.0"/>
+
+      <!-- p7 -->
+      <TextView
+              android:id="@+id/textview_p7_text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="P7"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              android:layout_marginRight="16dp"
+              app:layout_constraintTop_toBottomOf="@id/textview_t7_text"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintRight_toLeftOf="@id/textview_p7_value"
+              app:layout_constraintHorizontal_chainStyle="packed"
+      />
+
+      <TextView
+              android:id="@+id/textview_p7_value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="0"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              app:layout_constraintTop_toTopOf="@id/textview_p7_text"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintBottom_toBottomOf="@id/textview_p7_text"
+              app:layout_constraintLeft_toRightOf="@id/textview_p7_text"
+              app:layout_constraintVertical_bias="0.0"/>
+
+      <!-- 01 -->
+      <TextView
+              android:id="@+id/textview_o1_text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="O1"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              android:layout_marginRight="16dp"
+              app:layout_constraintTop_toBottomOf="@id/textview_p7_text"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintRight_toLeftOf="@id/textview_o1_value"
+              app:layout_constraintHorizontal_chainStyle="packed"
+      />
+
+      <TextView
+              android:id="@+id/textview_o1_value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="0"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              app:layout_constraintTop_toTopOf="@id/textview_o1_text"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintBottom_toBottomOf="@id/textview_o1_text"
+              app:layout_constraintLeft_toRightOf="@id/textview_o1_text"
+              app:layout_constraintVertical_bias="0.0"/>
+
+      <!-- o2 -->
+      <TextView
+              android:id="@+id/textview_o2_text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="O2"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              android:layout_marginRight="16dp"
+              app:layout_constraintTop_toBottomOf="@id/textview_o1_text"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintRight_toLeftOf="@id/textview_o2_value"
+              app:layout_constraintHorizontal_chainStyle="packed"
+      />
+
+      <TextView
+              android:id="@+id/textview_o2_value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="0"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              app:layout_constraintTop_toTopOf="@id/textview_o2_text"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintBottom_toBottomOf="@id/textview_o2_text"
+              app:layout_constraintLeft_toRightOf="@id/textview_o2_text"
+              app:layout_constraintVertical_bias="0.0"/>
+
+      <!-- p8 -->
+      <TextView
+              android:id="@+id/textview_p8_text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="P8"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              android:layout_marginRight="16dp"
+              app:layout_constraintTop_toBottomOf="@id/textview_o2_text"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintRight_toLeftOf="@id/textview_p8_value"
+              app:layout_constraintHorizontal_chainStyle="packed"
+      />
+
+      <TextView
+              android:id="@+id/textview_p8_value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="0"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              app:layout_constraintTop_toTopOf="@id/textview_p8_text"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintBottom_toBottomOf="@id/textview_p8_text"
+              app:layout_constraintLeft_toRightOf="@id/textview_p8_text"
+              app:layout_constraintVertical_bias="0.0"/>
+
+      <!-- t8 -->
+      <TextView
+              android:id="@+id/textview_t8_text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="T8"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              android:layout_marginRight="16dp"
+              app:layout_constraintTop_toBottomOf="@id/textview_p8_text"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintRight_toLeftOf="@id/textview_t8_value"
+              app:layout_constraintHorizontal_chainStyle="packed"
+      />
+
+      <TextView
+              android:id="@+id/textview_t8_value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="0"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              app:layout_constraintTop_toTopOf="@id/textview_t8_text"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintBottom_toBottomOf="@id/textview_t8_text"
+              app:layout_constraintLeft_toRightOf="@id/textview_t8_text"
+              app:layout_constraintVertical_bias="0.0"/>
+
+      <!-- fc6 -->
+      <TextView
+              android:id="@+id/textview_fc6_text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="FC6"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              android:layout_marginRight="16dp"
+              app:layout_constraintTop_toBottomOf="@id/textview_t8_text"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintRight_toLeftOf="@id/textview_fc6_value"
+              app:layout_constraintHorizontal_chainStyle="packed"
+      />
+
+      <TextView
+              android:id="@+id/textview_fc6_value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="0"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              app:layout_constraintTop_toTopOf="@id/textview_fc6_text"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintBottom_toBottomOf="@id/textview_fc6_text"
+              app:layout_constraintLeft_toRightOf="@id/textview_fc6_text"
+              app:layout_constraintVertical_bias="0.0"/>
+
+      <!-- f4 -->
+      <TextView
+              android:id="@+id/textview_f4_text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="F4"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              android:layout_marginRight="16dp"
+              app:layout_constraintTop_toBottomOf="@id/textview_fc6_text"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintRight_toLeftOf="@id/textview_f4_value"
+              app:layout_constraintHorizontal_chainStyle="packed"
+      />
+
+      <TextView
+              android:id="@+id/textview_f4_value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="0"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              app:layout_constraintTop_toTopOf="@id/textview_f4_text"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintBottom_toBottomOf="@id/textview_f4_text"
+              app:layout_constraintLeft_toRightOf="@id/textview_f4_text"
+              app:layout_constraintVertical_bias="0.0"/>
+
+      <!-- f8 -->
+      <TextView
+              android:id="@+id/textview_f8_text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="F8"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              android:layout_marginRight="16dp"
+              app:layout_constraintTop_toBottomOf="@id/textview_f4_text"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintRight_toLeftOf="@id/textview_f8_value"
+              app:layout_constraintHorizontal_chainStyle="packed"
+      />
+
+      <TextView
+              android:id="@+id/textview_f8_value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="0"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              app:layout_constraintTop_toTopOf="@id/textview_f8_text"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintBottom_toBottomOf="@id/textview_f8_text"
+              app:layout_constraintLeft_toRightOf="@id/textview_f8_text"
+              app:layout_constraintVertical_bias="0.0"/>
+
+      <!-- af4 -->
+      <TextView
+              android:id="@+id/textview_af4_text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="F8"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              android:layout_marginRight="16dp"
+              app:layout_constraintTop_toBottomOf="@id/textview_f8_text"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintRight_toLeftOf="@id/textview_af4_value"
+              app:layout_constraintHorizontal_chainStyle="packed"
+      />
+
+      <TextView
+              android:id="@+id/textview_af4_value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="0"
+              android:textColor="@color/colorBlack"
+              android:textAppearance="@style/TextAppearance.AppCompat.Large"
+              app:layout_constraintTop_toTopOf="@id/textview_af4_text"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintBottom_toBottomOf="@id/textview_af4_text"
+              app:layout_constraintLeft_toRightOf="@id/textview_af4_text"
+              app:layout_constraintVertical_bias="0.0"/>
+
+      <Button
+              android:id="@+id/button_fermer"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Fermer"
+              android:textColor="@color/colorBlack"
+              android:background="@color/colorOrange"
+              android:layout_marginTop="16dp"
+              app:layout_constraintTop_toBottomOf="@id/textview_af4_text"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintLeft_toLeftOf="parent"
+
+      />
+
+   </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
