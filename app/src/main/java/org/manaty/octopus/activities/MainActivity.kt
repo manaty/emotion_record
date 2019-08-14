@@ -3,6 +3,7 @@ package org.manaty.octopus.activities
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
@@ -28,6 +29,9 @@ class MainActivity : BaseActivity(), View.OnTouchListener, View.OnClickListener 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        /** keep the screen on**/
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
         viewModel = ViewModelProviders.of(this as FragmentActivity).get(MainViewModel::class.java)
 
         initView()
@@ -47,6 +51,8 @@ class MainActivity : BaseActivity(), View.OnTouchListener, View.OnClickListener 
 
     override fun onDestroy() {
         super.onDestroy()
+        /** remove screen on flag**/
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         viewModel.requestObserver.onCompleted()
         viewModel.channel.shutdownNow()
     }
